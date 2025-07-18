@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Minecraft Mods</title>
+
+<!-- Tailwind CSS CDN -->
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<!-- Lucide Icons CDN -->
+
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<style>
+
+/* Custom styles */
+
+body {
+
+font-family: 'Inter', sans-serif;
+
+background: linear-gradient(to bottom right, #1a202c, #2d3748); /* Gradient background */
+
+color: #e2e8f0; /* Light text color */
+
+min-height: 100vh;
+
+display: flex;
+
+flex-direction: column;
+
+align-items: center;
+
+padding: 2rem 1rem; /* Responsive padding */
+
+}
+
+
+/* Inter font import */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
+
+
+/* Custom animations for modal and messages */
+
+@keyframes fadeIn {
+
+from { opacity: 0; }
+
+to { opacity: 1; }
+
+}
+
+
+@keyframes scaleIn {
+
+from { transform: scale(0.9); opacity: 0; }
+
+to { transform: scale(1); opacity: 1; }
+
+}
+
+
+@keyframes fadeInDown {
+
+from { opacity: 0; transform: translateY(-20px); }
+
+to { opacity: 1; transform: translateY(0); }
+
+}
+
+
+.animate-fade-in { animation: fadeIn 0.3s ease-out forwards; }
+
+.animate-scale-in { animation: scaleIn 0.3s ease-out forwards; }
+
+.animate-fade-in-down { animation: fadeInDown 0.5s ease-out forwards; }
+
+
+/* Hide scrollbar for aesthetic purposes if needed, but allow scrolling */
+
+body::-webkit-scrollbar {
+
+width: 8px;
+
+}
+
+body::-webkit-scrollbar-track {
+
+background: #1a202c;
+
+}
+
+body::-webkit-scrollbar-thumb {
+
+background-color: #4a5568;
+
+border-radius: 4px;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+
+<!-- Header -->
+
+<header class="w-full max-w-6xl text-center mb-10">
+
+<h1 class="text-5xl sm:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-500 mb-4">
+
+Minecraft Mods
+
+</h1>
+
+<p class="text-xl sm:text-2xl text-gray-300 mb-6">
+
+Enhance your Minecraft experience with amazing mods!
+
+</p>
+
+<!-- Search Bar -->
+
+<div class="relative w-full max-w-md mx-auto mb-8">
+
+<input
+
+type="text"
+
+id="search-input"
+
+placeholder="Search for mods..."
+
+class="w-full p-3 pl-12 rounded-full bg-gray-700 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-inner"
+
+/>
+
+<!-- Lucide Search Icon -->
+
+<i data-lucide="search" class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5"></i>
+
+</div>
+
+</header>
+
+
+<!-- Purchase/Download Confirmation Message Container -->
+
+<div id="purchase-message-container" class="fixed top-4 left-1/2 -translate-x-1/2 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg flex items-center space-x-2 z-50 hidden animate-fade-in-down">
+
+<i data-lucide="check-circle" class="w-6 h-6"></i>
+
+<span id="purchase-message-text"></span>
+
+</div>
+
+
+<!-- Mods Grid Container -->
+
+<div id="mods-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-6xl">
+
+<!-- Mod cards will be injected here by JavaScript -->
+
+</div>
+
+
+<!-- Version Selection Modal -->
+
+<div id="version-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50 animate-fade-in hidden">
+
+<div class="bg-gray-800 rounded-xl shadow-2xl p-8 w-full max-w-lg relative transform scale-95 animate-scale-in">
+
+<button id="close-modal-btn" class="absolute top-4 right-4 text-gray-400 hover:text-gray-100 transition-colors">
+
+<i data-lucide="x-circle" class="w-7 h-7"></i>
+
+</button>
+
+<h2 id="modal-mod-name" class="text-4xl font-bold text-green-400 mb-4 text-center"></h2>
+
+<p class="text-gray-300 text-lg mb-6 text-center">
+
+Choose the Minecraft version you want this mod for:
+
+</p>
+
+<div id="modal-versions-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6">
+
+<!-- Version buttons will be injected here by JavaScript -->
+
+</div>
+
+<p class="text-gray-400 text-sm text-center">
+
+(This is a simulated download. No actual mod file will be transferred.)
+
+</p>
+
+</div>
+
+</div>
+
+
+<script>
+
+// Function to base64 encode SVG for data URI
+
+function encodeSvg(svgString) {
+
+const encoded = btoa(unescape(encodeURIComponent(svgString)));
+
+return `data:image/svg+xml;base64,${encoded}`;
+
+}
+
+
+// Inline SVG Icons for each mod
+
+const svgIcons = {
+
+JourneyMap: encodeSvg(`
+
+<svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+
+<rect width="100" height="100" fill="#6a0dad"/>
+
+<circle cx="50" cy="50" r="35" fill="#f0f0f0"/>
+
+<path d="M50 20 L70 50 L50 80 L30 50 Z" fill="#4CAF50"/>
+
+<circle cx="50" cy="50" r="10" fill="#212121"/>
+
+</svg>
+
+`),
+
+OptiFine: encodeSvg(`
+
+<svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+
+<rect width="100" height="100" fill="#2196F3"/>
+
+<circle cx="50" cy="50" r="40" fill="white"/>
+
+<circle cx="50" cy="50" r="15" fill="#3F51B5"/>
+
+<circle cx="65" cy="35" r="5" fill="white"/>
+
+</svg>
+
+`),
+
+'Applied Energistics 2': encodeSvg(`
+
+<svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+
+<rect width="100" height="100" fill="#FF5722"/>
+
+<polygon points="50,10 90,50 50,90 10,50" fill="#FFC107"/>
+
+<text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="30" fill="#795548" font-weight="bold">AE2</text>
+
+</svg>
+
+`),
+
+'Biomes O\' Plenty': encodeSvg(`
+
+<svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+
+<rect width="100" height="100" fill="#4CAF50"/>
+
+<circle cx="25" cy="75" r="15" fill="#8BC34A"/>
+
+<circle cx="75" cy="25" r="20" fill="#CDDC39"/>
+
+<path d="M0 100 L100 0 L100 100 Z" fill="#388E3C"/>
+
+</svg>
+
+`),
+
+'Twilight Forest': encodeSvg(`
+
+<svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+
+<rect width="100" height="100" fill="#303F9F"/>
+
+<path d="M50 10 L70 40 L60 40 L80 70 L70 70 L90 100 L10 100 L30 70 L20 70 L40 40 L30 40 Z" fill="#673AB7"/>
+
+<circle cx="50" cy="50" r="15" fill="#FFEB3B"/>
+
+</svg>
+
+`),
+
+'IndustrialCraft 2': encodeSvg(`
+
+<svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+
+<rect width="100" height="100" fill="#607D8B"/>
+
+<rect x="20" y="20" width="60" height="60" fill="#B0BEC5"/>
+
+<circle cx="35" cy="35" r="8" fill="#424242"/>
+
+<circle cx="65" cy="65" r="8" fill="#424242"/>
+
+<rect x="45" y="45" width="10" height="10" fill="#FFC107"/>
+
+</svg>
+
+`),
+
+'Pam\'s HarvestCraft 2': encodeSvg(`
+
+<svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+
+<rect width="100" height="100" fill="#FF9800"/>
+
+<path d="M20 50 Q50 20 80 50 T50 80 Q50 50 20 50 Z" fill="#FFC107"/>
+
+<circle cx="50" cy="50" r="10" fill="#E65100"/>
+
+</svg>
+
+`),
+
+'Tinkers\' Construct': encodeSvg(`
+
+<svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+
+<rect width="100" height="100" fill="#795548"/>
+
+<rect x="20" y="40" width="60" height="20" fill="#BCAAA4"/>
+
+<rect x="40" y="20" width="20" height="60" fill="#BCAAA4"/>
+
+<circle cx="50" cy="50" r="10" fill="#FFC107"/>
+
+</svg>
+
+`),
+
+'Storage Drawers': encodeSvg(`
+
+<svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+
+<rect width="100" height="100" fill="#455A64"/>
+
+<rect x="10" y="10" width="80" height="35" fill="#90A4AE"/>
+
+<rect x="10" y="55" width="80" height="35" fill="#90A4AE"/>
+
+<circle cx="50" cy="27.5" r="5" fill="#263238"/>
+
+<circle cx="50" cy="72.5" r="5" fill="#263238"/>
+
+</svg>
+
+`),
+
+'Iron Chests': encodeSvg(`
+
+<svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+
+<rect width="100" height="100" fill="#757575"/>
+
+<rect x="15" y="25" width="70" height="50" fill="#BDBDBD"/>
+
+<rect x="45" y="20" width="10" height="60" fill="#616161"/>
+
+<circle cx="50" cy="50" r="8" fill="#FFD700"/>
+
+</svg>
+
+`),
+
+'Waystones': encodeSvg(`
+
+<svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+
+<rect width="100" height="100" fill="#4CAF50"/>
+
+<polygon points="50,10 65,40 85,40 70,70 80,90 20,90 30,70 15,40 35,40 Z" fill="#607D8B"/>
+
+<circle cx="50" cy="50" r="10" fill="#FFEB3B"/>
+
+</svg>
+
+`),
+
+'Quark': encodeSvg(`
+
+<svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+
+<rect width="100" height="100" fill="#9C27B0"/>
+
+<path d="M20 50 Q50 20 80 50 Q50 80 20 50 Z" fill="#E040FB" stroke="#FFFFFF" stroke-width="3"/>
+
+</svg>
+
+`),
+
+'Immersive Engineering': encodeSvg(`
+
+<svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+
+<rect width="100" height="100" fill="#FF7043"/>
+
+<rect x="15" y="15" width="70" height="70" fill="#FFB74D"/>
+
+<circle cx="30" cy="30" r="10" fill="#424242"/>
+
+<circle cx="70" cy="70" r="10" fill="#424242"/>
+
+<line x1="30" y1="30" x2="70" y2="70" stroke="#424242" stroke-width="5"/>
+
+</svg>
+
+`),
+
+'Botania': encodeSvg(`
+
+<svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+
+<rect width="100" height="100" fill="#8BC34A"/>
+
+<circle cx="50" cy="50" r="30" fill="#4CAF50"/>
+
+<circle cx="50" cy="50" r="10" fill="white"/>
+
+<path d="M50 20 L55 30 L65 30 L60 40 L70 45 L60 50 L70 55 L60 60 L65 70 L55 70 L50 80 L45 70 L35 70 L40 60 L30 55 L40 50 L30 45 L40 40 L35 30 L45 30 Z" fill="#FFEB3B"/>
+
+</svg>
+
+`),
+
+'Chisel': encodeSvg(`
+
+<svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+
+<rect width="100" height="100" fill="#6D4C41"/>
+
+<rect x="20" y="20" width="60" height="60" fill="#BCAAA4"/>
+
+<path d="M40 20 L60 20 L60 80 L40 80 Z" fill="#8D6E63"/>
+
+<path d="M20 40 L80 40 L80 60 L20 60 Z" fill="#8D6E63"/>
+
+</svg>
+
+`),
+
+'Sodium': encodeSvg(`
+
+<svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+
+<rect width="100" height="100" fill="#E0F2F7"/>
+
+<circle cx="50" cy="50" r="35" fill="#4DD0E1"/>
+
+<text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" font-size="40" fill="#006064" font-weight="bold">Na</text>
+
+</svg>
+
+`),
+
+'Iris Shaders': encodeSvg(`
+
+<svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+
+<rect width="100" height="100" fill="#9FA8DA"/>
+
+<path d="M50 10 L80 50 L50 90 L20 50 Z" fill="#C5CAE9"/>
+
+<circle cx="50" cy="50" r="15" fill="#3F51B5"/>
+
+</svg>
+
+`),
+
+'Create': encodeSvg(`
+
+<svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+
+<rect width="100" height="100" fill="#FF8A65"/>
+
+<path d="M20 50 L50 20 L80 50 L50 80 Z" fill="#FFCCBC"/>
+
+<rect x="40" y="40" width="20" height="20" fill="#E64A19"/>
+
+</svg>
+
+`),
+
+'Alex\'s Mobs': encodeSvg(`
+
+<svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+
+<rect width="100" height="100" fill="#66BB6A"/>
+
+<circle cx="50" cy="50" r="40" fill="#A5D6A7"/>
+
+<path d="M30 50 A20 20 0 0 1 70 50 A20 20 0 0 1 30 50 Z" fill="#4CAF50"/>
+
+<circle cx="40" cy="45" r="5" fill="#212121"/>
+
+<circle cx="60" cy="45" r="5" fill="#212121"/>
+
+</svg>
+
+`),
+
+'Refined Storage': encodeSvg(`
+
+<svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+
+<rect width="100" height="100" fill="#78909C"/>
+
+<rect x="20" y="20" width="60" height="60" fill="#CFD8DC"/>
+
+<rect x="30" y="30" width="40" height="40" fill="#546E7A"/>
+
+<rect x="40" y="40" width="20" height="20" fill="#B0BEC5"/>
+
+</svg>
+
+`),
+
+};
+
+
+const initialMods = [
+
+{
+
+id: 1,
+
+name: 'JourneyMap',
+
+description: 'Real-time mapping in-game or in a web browser. Explore your world with ease!',
+
+imageUrl: svgIcons.JourneyMap,
+
+isPurchased: false,
+
+availableVersions: ['1.20.1', '1.19.2', '1.18.2', '1.16.5'],
+
+},
+
+{
+
+id: 2,
+
+name: 'OptiFine',
+
+description: 'Optimization mod that allows Minecraft to run faster and look better with full support for shaders.',
+
+imageUrl: svgIcons.OptiFine,
+
+isPurchased: false,
+
+availableVersions: ['1.20.1', '1.19.4', '1.18.2', '1.12.2'],
+
+},
+
+{
+
+id: 3,
+
+name: 'Applied Energistics 2',
+
+description: 'A mod about item storage, automation, and applied power. Build complex systems!',
+
+imageUrl: svgIcons['Applied Energistics 2'],
+
+isPurchased: false,
+
+availableVersions: ['1.20.1', '1.19.2', '1.16.5'],
+
+},
+
+{
+
+id: 4,
+
+name: 'Biomes O\' Plenty',
+
+description: 'Adds a ton of new biomes to Minecraft, offering a more diverse and exciting world to explore.',
+
+imageUrl: svgIcons['Biomes O\' Plenty'],
+
+isPurchased: false,
+
+availableVersions: ['1.20.1', '1.19.2', '1.18.2'],
+
+},
+
+{
+
+id: 5,
+
+name: 'Twilight Forest',
+
+description: 'A dimension exploration mod that adds a new, densely forested dimension filled with adventure.',
+
+imageUrl: svgIcons['Twilight Forest'],
+
+isPurchased: false,
+
+availableVersions: ['1.20.1', '1.19.2', '1.16.5'],
+
+},
+
+{
+
+id: 6,
+
+name: 'IndustrialCraft 2',
+
+description: 'A mod that introduces industrial processes, machines, and power generation to Minecraft.',
+
+imageUrl: svgIcons['IndustrialCraft 2'],
+
+isPurchased: false,
+
+availableVersions: ['1.12.2', '1.7.10'],
+
+},
+
+{
+
+id: 7,
+
+name: 'Pam\'s HarvestCraft 2',
+
+description: 'Expands farming and food options with hundreds of new crops and recipes.',
+
+imageUrl: svgIcons['Pam\'s HarvestCraft 2'],
+
+isPurchased: false,
+
+availableVersions: ['1.20.1', '1.19.2', '1.16.5'],
+
+},
+
+{
+
+id: 8,
+
+name: 'Tinkers\' Construct',
+
+description: 'Create and customize powerful tools and weapons with unique properties.',
+
+imageUrl: svgIcons['Tinkers\' Construct'],
+
+isPurchased: false,
+
+availableVersions: ['1.20.1', '1.19.2', '1.16.5'],
+
+},
+
+{
+
+id: 9,
+
+name: 'Storage Drawers',
+
+description: 'Compact and visually appealing storage solutions for your vast item collection.',
+
+imageUrl: svgIcons['Storage Drawers'],
+
+isPurchased: false,
+
+availableVersions: ['1.20.1', '1.19.2', '1.18.2', '1.16.5'],
+
+},
+
+{
+
+id: 10,
+
+name: 'Iron Chests',
+
+description: 'Upgrade your vanilla chests to hold more items with various material tiers.',
+
+imageUrl: svgIcons['Iron Chests'],
+
+isPurchased: false,
+
+availableVersions: ['1.20.1', '1.19.2', '1.18.2'],
+
+},
+
+{
+
+id: 11,
+
+name: 'Waystones',
+
+description: 'Teleport across your world using magical waystones for quick travel.',
+
+imageUrl: svgIcons.Waystones,
+
+isPurchased: false,
+
+availableVersions: ['1.20.1', '1.19.2', '1.18.2', '1.16.5'],
+
+},
+
+{
+
+id: 12,
+
+name: 'Quark',
+
+description: 'A mod that adds small, vanilla-friendly features to enhance gameplay without changing the core game.',
+
+imageUrl: svgIcons.Quark,
+
+isPurchased: false,
+
+availableVersions: ['1.20.1', '1.19.2', '1.18.2'],
+
+},
+
+{
+
+id: 13,
+
+name: 'Immersive Engineering',
+
+description: 'Adds realistic and beautiful industrial machinery, power generation, and automation.',
+
+imageUrl: svgIcons['Immersive Engineering'],
+
+isPurchased: false,
+
+availableVersions: ['1.19.2', '1.18.2', '1.16.5'],
+
+},
+
+{
+
+id: 14,
+
+name: 'Botania',
+
+description: 'A magic-themed tech mod that focuses on natural magic, flowers, and mana.',
+
+imageUrl: svgIcons.Botania,
+
+isPurchased: false,
+
+availableVersions: ['1.20.1', '1.19.2', '1.18.2'],
+
+},
+
+{
+
+id: 15,
+
+name: 'Chisel',
+
+description: 'Provides a vast array of decorative blocks for building and aesthetic purposes.',
+
+imageUrl: svgIcons.Chisel,
+
+isPurchased: false,
+
+availableVersions: ['1.20.1', '1.19.2', '1.18.2'],
+
+},
+
+{
+
+id: 16,
+
+name: 'Sodium',
+
+description: 'A free and open-source rendering engine replacement for Minecraft that greatly improves frame rates and reduces micro-stutter.',
+
+imageUrl: svgIcons.Sodium,
+
+isPurchased: false,
+
+availableVersions: ['1.20.1', '1.19.4', '1.18.2'],
+
+},
+
+{
+
+id: 17,
+
+name: 'Iris Shaders',
+
+description: 'A modern shader pack for Minecraft. Requires Sodium for best performance.',
+
+imageUrl: svgIcons['Iris Shaders'],
+
+isPurchased: false,
+
+availableVersions: ['1.20.1', '1.19.4', '1.18.2'],
+
+},
+
+{
+
+id: 18,
+
+name: 'Create',
+
+description: 'A mod that adds a variety of tools and blocks for building, automation, and decoration.',
+
+imageUrl: svgIcons.Create,
+
+isPurchased: false,
+
+availableVersions: ['1.20.1', '1.19.2', '1.18.2'],
+
+},
+
+{
+
+id: 19,
+
+name: 'Alex\'s Mobs',
+
+description: 'Adds over 80 new mobs to Minecraft, each with unique behaviors and drops.',
+
+imageUrl: svgIcons['Alex\'s Mobs'],
+
+isPurchased: false,
+
+availableVersions: ['1.20.1', '1.19.2', '1.18.2'],
+
+},
+
+{
+
+id: 20,
+
+name: 'Refined Storage',
+
+description: 'A mass storage network system for items and fluids, offering advanced automation.',
+
+imageUrl: svgIcons['Refined Storage'],
+
+isPurchased: false,
+
+availableVersions: ['1.20.1', '1.19.2', '1.18.2'],
+
+},
+
+];
+
+
+let currentMods = [...initialMods];
+
+let selectedModForVersions = null;
+
+
+const searchInput = document.getElementById('search-input');
+
+const modsGrid = document.getElementById('mods-grid');
+
+const purchaseMessageContainer = document.getElementById('purchase-message-container');
+
+const purchaseMessageText = document.getElementById('purchase-message-text');
+
+const versionModal = document.getElementById('version-modal');
+
+const modalModName = document.getElementById('modal-mod-name');
+
+const modalVersionsGrid = document.getElementById('modal-versions-grid');
+
+const closeModalBtn = document.getElementById('close-modal-btn');
+
+
+function renderMods(modsToRender) {
+
+console.log('renderMods called with:', modsToRender);
+
+modsGrid.innerHTML = '';
+
+
+if (!modsToRender || modsToRender.length === 0) {
+
+modsGrid.innerHTML = `
+
+<div class="col-span-1 sm:col-span-2 lg:col-span-3 text-center py-10 text-gray-400 text-2xl">
+
+No mods found matching your search.
+
+</div>
+
+`;
+
+return;
+
+}
+
+
+modsToRender.forEach(mod => {
+
+const modCard = document.createElement('div');
+
+modCard.className = `
+
+bg-gray-800 rounded-xl shadow-lg overflow-hidden transform transition-all duration-300
+
+hover:scale-105 hover:shadow-2xl flex flex-col
+
+`;
+
+modCard.innerHTML = `
+
+<img
+
+src="${mod.imageUrl}"
+
+alt="${mod.name}"
+
+class="w-full h-48 object-cover rounded-t-xl"
+
+onerror="this.onerror=null;this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMTAwIDEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iIzYxNjE2MSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBkb21pbm5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIzMCIgZmlsbD0id2hpdGUiIGZvbnQtd2VpZ2h0PSJib2xkIj5FcnJvcjwvdGV4dD48L3N2Zz4=';"
+
+/>
+
+<div class="p-6 flex flex-col flex-grow">
+
+<h2 class="text-3xl font-bold text-green-400 mb-2">${mod.name}</h2>
+
+<p class="text-gray-300 text-lg mb-4 flex-grow">${mod.description}</p>
+
+<div class="flex items-center justify-end mt-auto">
+
+${mod.isPurchased ? `
+
+<button
+
+class="bg-green-700 text-white px-6 py-3 rounded-full font-semibold text-lg flex items-center space-x-2 shadow-md cursor-not-allowed opacity-75"
+
+disabled
+
+>
+
+<i data-lucide="check-circle" class="w-5 h-5"></i>
+
+<span>Downloaded!</span>
+
+</button>
+
+` : `
+
+<button
+
+data-mod-id="${mod.id}"
+
+class="download-mod-btn bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-full font-semibold text-lg flex items-center space-x-2 shadow-lg transform transition-transform duration-200 hover:scale-105 active:scale-95"
+
+>
+
+<i data-lucide="download" class="w-5 h-5"></i>
+
+<span>Download</span>
+
+</button>
+
+`}
+
+</div>
+
+</div>
+
+`;
+
+modsGrid.appendChild(modCard);
+
+});
+
+lucide.createIcons();
+
+}
+
+
+function filterMods() {
+
+console.log('filterMods called. Search term:', searchInput.value);
+
+const searchTerm = searchInput.value.toLowerCase();
+
+const filtered = currentMods.filter(mod => {
+
+return (
+
+mod.name.toLowerCase().startsWith(searchTerm) ||
+
+mod.description.toLowerCase().startsWith(searchTerm)
+
+);
+
+});
+
+return filtered;
+
+}
+
+
+function handleDownloadClick(modId) {
+
+console.log('handleDownloadClick called for mod ID:', modId);
+
+const mod = currentMods.find(m => m.id === modId);
+
+if (mod) {
+
+selectedModForVersions = mod;
+
+modalModName.textContent = `Select Version for ${mod.name}`;
+
+modalVersionsGrid.innerHTML = '';
+
+
+mod.availableVersions.forEach(version => {
+
+const versionButton = document.createElement('button');
+
+versionButton.className = `
+
+bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg shadow-md
+
+transform transition-transform duration-200 hover:scale-105 active:scale-95 text-xl
+
+`;
+
+versionButton.textContent = version;
+
+versionButton.onclick = () => handleVersionSelect(mod.id, version);
+
+modalVersionsGrid.appendChild(versionButton);
+
+});
+
+
+versionModal.classList.remove('hidden');
+
+} else {
+
+console.error('Mod not found for ID:', modId);
+
+}
+
+}
+
+
+function handleVersionSelect(modId, versionName) {
+
+console.log('handleVersionSelect called for mod ID:', modId, 'version:', versionName);
+
+const modIndex = currentMods.findIndex(m => m.id === modId);
+
+if (modIndex !== -1) {
+
+currentMods[modIndex].isPurchased = true;
+
+}
+
+
+const dummyContent = `This is a simulated download for ${selectedModForVersions.name} (Minecraft ${versionName}).\n\nIn a real application, this would be the actual mod file.\n\nEnjoy your mod!`;
+
+const blob = new Blob([dummyContent], { type: 'application/java-archive' });
+
+const url = URL.createObjectURL(blob);
+
+const a = document.createElement('a');
+
+a.href = url;
+
+a.download = `${selectedModForVersions.name.replace(/\s/g, '_')}_${versionName}.jar`;
+
+document.body.appendChild(a);
+
+a.click();
+
+document.body.removeChild(a);
+
+URL.revokeObjectURL(url);
+
+
+purchaseMessageText.textContent = `Successfully downloaded "${selectedModForVersions.name}" for Minecraft ${versionName}!`;
+
+purchaseMessageContainer.classList.remove('hidden');
+
+setTimeout(() => {
+
+purchaseMessageContainer.classList.add('hidden');
+
+purchaseMessageText.textContent = '';
+
+}, 3000);
+
+
+closeVersionModal();
+
+renderMods(filterMods());
+
+}
+
+
+function closeVersionModal() {
+
+console.log('closeVersionModal called.');
+
+versionModal.classList.add('hidden');
+
+selectedModForVersions = null;
+
+}
+
+
+document.addEventListener('DOMContentLoaded', () => {
+
+console.log('DOM Content Loaded. Initializing...');
+
+renderMods(initialMods);
+
+
+searchInput.addEventListener('input', () => renderMods(filterMods()));
+
+
+modsGrid.addEventListener('click', (event) => {
+
+const button = event.target.closest('.download-mod-btn');
+
+if (button) {
+
+const modId = parseInt(button.dataset.modId);
+
+handleDownloadClick(modId);
+
+}
+
+});
+
+
+closeModalBtn.addEventListener('click', closeVersionModal);
+
+lucide.createIcons();
+
+console.log('Lucide icons created.');
+
+});
+
+</script>
+
+</body>
+
+</html>
+
+
